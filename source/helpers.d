@@ -1,4 +1,4 @@
-module deepath.mixins;
+module deepath.helpers;
 
 template logFunctionBorders()
 {
