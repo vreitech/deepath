@@ -1,0 +1,16 @@
+.dub
+docs.json
+__dummy.html
+docs/
+/deepath
+deepath.so
+deepath.dylib
+deepath.dll
+deepath.a
+deepath.lib
+deepath-test-*
+*.exe
+*.o
+*.obj
+*.lst
+*~

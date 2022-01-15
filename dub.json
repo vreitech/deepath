@@ -1,0 +1,24 @@
+{
+	"authors": [
+		"Filipp Chertiev"
+	],
+	"copyright": "Copyright © 2022, Filipp Chertiev",
+	"dependencies": {
+		"dyaml": "~>0.8.4",
+		"pack-d": "~>1.0.1",
+		"vibe-d": "~>0.9"
+	},
+	"description": "Requests dispatcher to Zabbix trap",
+	"license": "proprietary",
+	"name": "deepath",
+	"buildTypes": {
+		"debug": {
+			"buildOptions": ["debugMode", "debugInfo", "optimize"]
+		},
+		"release": {
+			"dflags": ["-mattr=+sse4.2"],
+			"versions": ["VibeOutputCompactHTML"],
+			"buildOptions": ["releaseMode", "optimize"]
+		}
+	}
+}
