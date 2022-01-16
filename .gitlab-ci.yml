@@ -3,8 +3,12 @@ stages:
   - test
   - deploy
 
+.default_tags:
+  tags: [deepath, supervisor, stage_1, env_alpha]
+
 build-job:
   stage: build
+  tags: !reference [.default_tags, tags]
   script:
     - echo "Compiling the code..."
     - dub build -bdebug --parallel
@@ -12,6 +16,7 @@ build-job:
 
 test-job:
   stage: test
+  tags: !reference [.default_tags, tags]
   script:
     - echo "Running tests..."
     - ls -l deepath
@@ -19,6 +24,7 @@ test-job:
 
 deploy-job:
   stage: deploy
+  tags: !reference [.default_tags, tags]
   script:
     - echo "Deploying application..."
     - echo "Application successfully deployed."
