@@ -10,7 +10,7 @@ build-job:
   stage: build
   tags: !reference [.default_tags, tags]
   artifacts:
-    path:
+    paths:
       - deepath
   script:
     - echo "Compiling the code..."
