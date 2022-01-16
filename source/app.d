@@ -1,25 +1,42 @@
 import vibe.vibe;
+//import core.time;
+//import std.datetime.date;
+//import std.datetime.systime;
+//import std.typecons;
+//import std.conv;
 import deepath.helpers;
 import deepath.mere;
 import deepath.formreq;
+import dyaml;
 
 void main()
 {
 	debug { setLogLevel(LogLevel.debug_); }
 	debug { mixin(logFunctionBorders!()); }
 
+	logInfo("Reading YAML config.");
+	Node ymlConfig;
+	const string ymlConfigFile = `config.yml`;
+	try {
+		ymlConfig = Loader.fromFile(ymlConfigFile).load();
+	} catch (Exception e) {
+		logException(e, "Opening YAML config file");
+		return;
+	}
+	logInfo("YAML config has been read.");
+
 	logInfo("Creating stash.");
 	auto stash = new mereStash;
 	logInfo("Initializing stash...");
-	if (!mereStash.one.doInit()) {
+	if (!stash.one.doInit()) {
 		logError(`Stash initialization failed! Exitting...`);
 		return;
 	}
-	stash.one.httpServerSettings.port = 8088;
 	stash.one.httpServerSettings.bindAddresses = ["::1", "127.0.0.1"];
-	stash.one.httpClientSettings.defaultKeepAliveTimeout = 1200.seconds;
-	stash.one.httpClientSettings.connectTimeout = 5.seconds;
-	stash.one.httpClientSettings.readTimeout = 5.seconds;
+	stash.one.httpServerSettings.port = getFromYaml!ushort(ymlConfig, 8088, "httpServerSettings", "port");
+	stash.one.httpClientSettings.defaultKeepAliveTimeout = getFromYaml(ymlConfig, 0, "httpClientSettings", "defaultKeepAliveTimeout").seconds;
+	stash.one.httpClientSettings.connectTimeout = getFromYaml(ymlConfig, 5, "httpClientSettings", "connectTimeout").seconds;
+	stash.one.httpClientSettings.readTimeout = getFromYaml(ymlConfig, 5, "httpClientSettings", "readTimeout").seconds;
 	logInfo("Stash initialized.");
 
 	logInfo("Declaring routes...");

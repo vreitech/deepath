@@ -14,4 +14,3 @@ deepath-test-*
 *.obj
 *.lst
 *~
-config.yml
