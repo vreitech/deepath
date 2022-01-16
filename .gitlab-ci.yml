@@ -9,6 +9,9 @@ stages:
 build-job:
   stage: build
   tags: !reference [.default_tags, tags]
+  artifacts:
+    path:
+      - deepath
   script:
     - echo "Compiling the code..."
     - dub build -bdebug --parallel
