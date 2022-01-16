@@ -36,9 +36,10 @@ class mereStash
     public HTTPServerSettings httpServerSettings;
     public HTTPClientSettings httpClientSettings;
     public URLRouter router;
+    public string[] endpoints;
 
     public this() {}
-    public bool doInit()
+    public bool doInit() @safe
     {
         debug { mixin(logFunctionBorders!()); }
         this.httpServerSettings = new HTTPServerSettings;

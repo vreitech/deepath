@@ -1,4 +1,5 @@
 import vibe.vibe;
+import std.algorithm.searching : canFind;
 //import core.time;
 //import std.datetime.date;
 //import std.datetime.systime;
@@ -9,8 +10,7 @@ import deepath.mere;
 import deepath.formreq;
 import dyaml;
 
-void main()
-{
+void main() {
 	debug { setLogLevel(LogLevel.debug_); }
 	debug { mixin(logFunctionBorders!()); }
 
@@ -34,13 +34,31 @@ void main()
 	}
 	stash.one.httpServerSettings.bindAddresses = ["::1", "127.0.0.1"];
 	stash.one.httpServerSettings.port = getFromYaml!ushort(ymlConfig, 8088, "httpServerSettings", "port");
+	stash.one.httpServerSettings.keepAliveTimeout = getFromYaml(ymlConfig, 10, "httpServerSettings", "keepAliveTimeout").seconds;
 	stash.one.httpClientSettings.defaultKeepAliveTimeout = getFromYaml(ymlConfig, 0, "httpClientSettings", "defaultKeepAliveTimeout").seconds;
 	stash.one.httpClientSettings.connectTimeout = getFromYaml(ymlConfig, 5, "httpClientSettings", "connectTimeout").seconds;
 	stash.one.httpClientSettings.readTimeout = getFromYaml(ymlConfig, 5, "httpClientSettings", "readTimeout").seconds;
+	if ("appSettings" in ymlConfig)	{
+		if ("endpoints" in ymlConfig["appSettings"]) {
+			foreach (Node endpoint; ymlConfig["appSettings"]["endpoints"]) {
+				logDebug("- endpoint '%s'", endpoint.as!string);
+				stash.one.endpoints ~= endpoint.as!string;
+			}
+		} else {
+			logError("Missed 'appSettings.endpoints' section in config. Exitting...");
+			return;
+		}
+	} else {
+		logError("Missed 'appSettings' section in config. Exitting...");
+		return;
+	}
 	logInfo("Stash initialized.");
+	debug { logDebug("stash.one.httpServerSettings.keepAliveTimeout == %s", stash.one.httpServerSettings.keepAliveTimeout); }
+	debug { logDebug("stash.one.httpClientSettings.defaultKeepAliveTimeout == %s", stash.one.httpClientSettings.defaultKeepAliveTimeout); }
 
 	logInfo("Declaring routes...");
 	stash.one.router.get(`/`, &mainPage);
+	stash.one.router.get(`/trigger/:endpoint`, &getJsonReq);
 	stash.one.router.get(`/css/*`, serveStaticFiles(`./public/css/`));
 	stash.one.router.get(`*`, serveStaticFiles(`./public/`));
 	logInfo("Routes declared.");
@@ -48,8 +66,7 @@ void main()
 
 	logInfo("Start listening interface(s)...");
 	auto listener = listenHTTP(stash.one.httpServerSettings, stash.one.router);
-	scope (exit)
-	{
+	scope (exit) {
 		listener.stopListening();
 	}
 
@@ -57,9 +74,35 @@ void main()
 	runApplication();
 }
 
-void mainPage(HTTPServerRequest req, HTTPServerResponse res)
-{
+void mainPage(HTTPServerRequest req, HTTPServerResponse res) @safe {
 	debug { mixin(logFunctionBorders!()); }
 
 	res.writeBody("Hello, World!");
+}
+
+void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
+	debug { mixin(logFunctionBorders!()); }
+
+	debug { logDebug("Method: %s", req.method); }
+
+	Json result = Json.emptyObject;
+	scope (exit) { res.writeJsonBody(result); }
+
+	auto stash = new mereStash;
+
+	if (!canFind(stash.one.endpoints, req.params["endpoint"])) {
+		result["status"] = false;
+		result["message"] = "Wrong endpoint";
+		return;
+	}
+
+	if (req.contentType != `application/json`) {
+		result["status"] = false;
+		result["message"] = "Wrong Content-Type";
+		return;
+	}
+
+	result["status"] = true;
+	result["message"] = "OK";
+	result["data"] = req.json;
 }

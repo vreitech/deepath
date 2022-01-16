@@ -3,8 +3,6 @@ module deepath.helpers;
 import core.vararg;
 import dyaml;
 import vibe.core.log : logDebug, logInfo, logError, logException;
-import std.typecons;
-import std.conv;
 
 template logFunctionBorders()
 {
@@ -12,13 +10,14 @@ template logFunctionBorders()
     ` scope(exit) logDebug("<- " ~ __MODULE__ ~ " " ~ __FUNCTION__);`;
 }
 
-T getFromYaml(T)(in Node yamlConfig, in T defaultValue, in string[] configParameters ...) {
+T getFromYaml(T)(in Node yamlConfig, in T defaultValue, in string[] configParameters ...) @safe
+{
     debug { mixin(logFunctionBorders!()); }
 
     Node node = yamlConfig;
     foreach (string parameter; configParameters)
     {
-        parameter in node ? logDebug("%s yes", parameter) : logDebug("%s no", parameter);
+        debug { parameter in node ? logDebug("%s is present", parameter) : logDebug("%s is NOT present", parameter); }
         if (parameter in node)
         {
             node = node[parameter];
