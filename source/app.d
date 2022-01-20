@@ -7,7 +7,7 @@ import std.algorithm.searching : canFind;
 //import std.conv;
 import deepath.helpers;
 import deepath.mere;
-import deepath.formreq;
+import deepath.formzabbixreq;
 import dyaml;
 
 void main() {
@@ -48,9 +48,13 @@ void main() {
 		).seconds;
 	if ("appSettings" in ymlConfig)	{
 		if ("endpoints" in ymlConfig["appSettings"]) {
-			foreach (Node endpoint; ymlConfig["appSettings"]["endpoints"]) {
-				logDebug("- endpoint '%s'", endpoint.as!string);
-				stash.one.endpoints ~= endpoint.as!string;
+			foreach (Node endpoint; ymlConfig["appSettings"]["endpoints"].mappingKeys) {
+				if ("server" in ymlConfig["appSettings"]["endpoints"][endpoint] && "port" in ymlConfig["appSettings"]["endpoints"][endpoint]) {
+					stash.one.endpoints ~= endpoint.as!string;
+					logDebug("proper endpoint '%s'", endpoint.as!string);
+				} else {
+					logDebug("broken endpoint '%s'", endpoint.as!string);
+				}
 			}
 		} else {
 			logError("Missed 'appSettings.endpoints' section in config. Exitting...");
@@ -117,4 +121,8 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 	result["status"] = true;
 	result["message"] = "OK";
 	result["data"] = req.json;
+
+	auto connZabbix = connectTCP(`127.0.0.1`, 5554);
+	connZabbix.write(formZabbixReq(req.json));
+	connZabbix.close();
 }
