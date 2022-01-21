@@ -34,33 +34,32 @@ void main() {
 		logError(`Stash initialization failed! Exitting...`);
 		return;
 	}
-	stash.one.httpServerSettings.bindAddresses = ["::1", "127.0.0.1"];
+//	stash.one.httpServerSettings.bindAddresses = ["::1", "127.0.0.1"];
+	stash.one.httpServerSettings.bindAddresses = [];
+	if(!ymlConfig["httpServerSettings"].containsKey("bindAddresses")
+	|| ymlConfig["httpServerSettings"]["bindAddresses"].length == 0) {
+		stash.one.httpServerSettings.bindAddresses ~= `127.0.0.1`;
+	} else {
+        	foreach(address; ymlConfig["httpServerSettings"]["bindAddresses"].sequence) {
+			stash.one.httpServerSettings.bindAddresses ~= address.as!string;
+			debug { logDebug("%s", address); }
+		}
+	}
 	stash.one.httpServerSettings.port = getFromYaml!ushort(ymlConfig, 8088, "httpServerSettings", "port");
 	stash.one.httpServerSettings.keepAliveTimeout = getFromYaml(
 		ymlConfig, 10, "httpServerSettings", "keepAliveTimeout"
 		).seconds;
-/*	stash.one.httpClientSettings.defaultKeepAliveTimeout = getFromYaml(
-		ymlConfig, 0, "httpClientSettings", "defaultKeepAliveTimeout"
-		).seconds;
-	stash.one.httpClientSettings.connectTimeout = getFromYaml(
-		ymlConfig, 5, "httpClientSettings", "connectTimeout"
-		).seconds;
-	stash.one.httpClientSettings.readTimeout = getFromYaml(
-		ymlConfig, 5, "httpClientSettings", "readTimeout"
-		).seconds;*/
 	if ("appSettings" in ymlConfig)	{
 		if ("endpoints" in ymlConfig["appSettings"]) {
 			foreach (endpoint; ymlConfig["appSettings"]["endpoints"].mapping) {
-				logDebug("%s", endpoint.key);
-				logDebug("%s", endpoint.value["server"]);
 				if ("server" in endpoint.value
 				  && "port" in endpoint.value
 				  && "hostname" in endpoint.value
 				  && "key" in endpoint.value) {
 				  	stash.one.endpoints[endpoint.key.as!string] = endpoint.value;
-				 	logDebug("proper endpoint '%s'", endpoint.key.as!string);
+				 	debug { logDebug("proper endpoint '%s'", endpoint.key.as!string); }
 				} else {
-				 	logDebug("broken endpoint '%s'", endpoint.key.as!string);
+				 	debug { logDebug("broken endpoint '%s'", endpoint.key.as!string); }
 				}
 			}
 		} else {
@@ -75,9 +74,6 @@ void main() {
 	debug { logDebug(
 		"stash.one.httpServerSettings.keepAliveTimeout == %s", stash.one.httpServerSettings.keepAliveTimeout
 		); }
-/*	debug { logDebug(
-		"stash.one.httpClientSettings.defaultKeepAliveTimeout == %s", stash.one.httpClientSettings.defaultKeepAliveTimeout
-		); }*/
 
 	logInfo("Declaring routes...");
 	stash.one.router.get(`/`, &mainPage);
