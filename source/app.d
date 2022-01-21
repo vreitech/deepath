@@ -122,19 +122,25 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 		return;
 	}
 
+	auto zabbixReq = formZabbixReq(
+		(stash.one.endpoints[req.params["endpoint"]])["hostname"].as!string,
+		(stash.one.endpoints[req.params["endpoint"]])["key"].as!string,
+		req.json
+		);
+	
+	if (zabbixReq.length == 0) {
+		result["status"] = false;
+		result["message"] = "Can't parse body into JSON";
+		return;
+	}
+
 	result["status"] = true;
 	result["message"] = "OK";
-//	result["data"] = req.json;
 
 	auto connZabbix = connectTCP(
 		(stash.one.endpoints[req.params["endpoint"]])["server"].as!string,
 		(stash.one.endpoints[req.params["endpoint"]])["port"].as!ushort
 		);
-	connZabbix.write(formZabbixReq(
-		(stash.one.endpoints[req.params["endpoint"]])["hostname"].as!string,
-		(stash.one.endpoints[req.params["endpoint"]])["key"].as!string,
-		req.json
-		));
-//	logDebug("Responce: %s", connZabbix.readAllUTF8());
+	connZabbix.write(zabbixReq);
 	connZabbix.close();
 }
