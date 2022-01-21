@@ -49,9 +49,10 @@ void main() {
 	if ("appSettings" in ymlConfig)	{
 		if ("endpoints" in ymlConfig["appSettings"]) {
 			foreach (Node endpoint; ymlConfig["appSettings"]["endpoints"].mappingKeys) {
-				if ("server" in ymlConfig["appSettings"]["endpoints"][endpoint]
-				&& "port" in ymlConfig["appSettings"]["endpoints"][endpoint]) {
-					stash.one.endpoints ~= endpoint.as!string;
+				if ("server" in ymlConfig["appSettings"]["endpoints"][endpoint.as!string]
+				&& "port" in ymlConfig["appSettings"]["endpoints"][endpoint.as!string]
+				&& "hostname" in ymlConfig["appSettings"]["endpoints"][endpoint.as!string]) {
+					stash.one.endpoints[endpoint.as!string] = endpoint;
 					logDebug("proper endpoint '%s'", endpoint.as!string);
 				} else {
 					logDebug("broken endpoint '%s'", endpoint.as!string);
@@ -107,7 +108,8 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 
 	auto stash = new mereStash;
 
-	if (!canFind(stash.one.endpoints, req.params["endpoint"])) {
+//	if (!canFind(stash.one.endpoints, req.params["endpoint"])) {
+	if (!(req.params["endpoint"] in stash.one.endpoints)) {
 		result["status"] = false;
 		result["message"] = "Wrong endpoint";
 		return;
@@ -121,9 +123,16 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 
 	result["status"] = true;
 	result["message"] = "OK";
-	result["data"] = req.json;
+//	result["data"] = req.json;
 
-	auto connZabbix = connectTCP(`127.0.0.1`, 5554);
-	connZabbix.write(formZabbixReq(req.json));
+	auto connZabbix = connectTCP(
+		stash.one.endpoints[req.params["endpoint"]]["server"].as!string,
+		stash.one.endpoints[req.params["endpoint"]]["port"].as!ushort
+		);
+	connZabbix.write(formZabbixReq(
+		stash.one.endpoints[req.params["endpoint"]]["hostname"].as!string,
+		stash.one.endpoints[req.params["endpoint"]]["key"].as!string,
+		req.json
+		));
 	connZabbix.close();
 }

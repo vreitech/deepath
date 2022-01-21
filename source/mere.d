@@ -36,7 +36,7 @@ class mereStash
     public HTTPServerSettings httpServerSettings;
     public HTTPClientSettings httpClientSettings;
     public URLRouter router;
-    public string[] endpoints;
+    public Node[string] endpoints;
 
     public this() {}
     public bool doInit() @safe
