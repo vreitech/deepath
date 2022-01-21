@@ -16,6 +16,7 @@ build-job:
     - echo "Compiling the code..."
 #    - dub build -bdebug --parallel
     - dub build -brelease --parallel
+    - strip -s deepath
     - echo "Compile complete."
 
 test-job:
@@ -23,7 +24,6 @@ test-job:
   tags: !reference [.default_tags, tags]
   script:
     - echo "Running tests..."
-    - strip -s deepath
     - ls -l deepath
     - echo "Tests complete."
 
@@ -31,5 +31,4 @@ deploy-job:
   stage: deploy
   tags: !reference [.default_tags, tags]
   script:
-    - echo "Deploying application..."
     - echo "Application successfully deployed."
