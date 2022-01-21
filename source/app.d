@@ -1,5 +1,6 @@
 import vibe.vibe;
 import std.algorithm.searching : canFind;
+import std.range;
 //import core.time;
 //import std.datetime.date;
 //import std.datetime.systime;
@@ -48,14 +49,18 @@ void main() {
 		).seconds;
 	if ("appSettings" in ymlConfig)	{
 		if ("endpoints" in ymlConfig["appSettings"]) {
-			foreach (Node endpoint; ymlConfig["appSettings"]["endpoints"].mappingKeys) {
-				if ("server" in ymlConfig["appSettings"]["endpoints"][endpoint]
-				&& "port" in ymlConfig["appSettings"]["endpoints"][endpoint]) {
-					stash.one.endpoints ~= endpoint.as!string;
-					logDebug("proper endpoint '%s'", endpoint.as!string);
-				} else {
-					logDebug("broken endpoint '%s'", endpoint.as!string);
-				}
+			foreach (endpoint; ymlConfig["appSettings"]["endpoints"].mapping) {
+				logDebug("%s", endpoint.key);
+				logDebug("%s", endpoint.value["server"]);
+				// if (endpoint.containsKey("server")
+				// && endpoint.containsKey("port")
+				// && endpoint.containsKey("hostname")
+				// && endpoint.containsKey("key")) {
+				// 	stash.one.endpoints[endpoint.as!string] = endpoint;
+				// 	logDebug("proper endpoint '%s'", endpoint.as!string);
+				// } else {
+				// 	logDebug("broken endpoint '%s'", endpoint.as!string);
+				// }
 			}
 		} else {
 			logError("Missed 'appSettings.endpoints' section in config. Exitting...");
@@ -107,7 +112,8 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 
 	auto stash = new mereStash;
 
-	if (!canFind(stash.one.endpoints, req.params["endpoint"])) {
+//	if (!canFind(stash.one.endpoints, req.params["endpoint"])) {
+	if (!(req.params["endpoint"] in stash.one.endpoints)) {
 		result["status"] = false;
 		result["message"] = "Wrong endpoint";
 		return;
@@ -121,9 +127,16 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 
 	result["status"] = true;
 	result["message"] = "OK";
-	result["data"] = req.json;
+//	result["data"] = req.json;
 
-	auto connZabbix = connectTCP(`127.0.0.1`, 5554);
-	connZabbix.write(formZabbixReq(req.json));
+	auto connZabbix = connectTCP(
+		(stash.one.endpoints[req.params["endpoint"]])["server"].as!string,
+		(stash.one.endpoints[req.params["endpoint"]])["port"].as!ushort
+		);
+	connZabbix.write(formZabbixReq(
+		(stash.one.endpoints[req.params["endpoint"]])["hostname"].as!string,
+		(stash.one.endpoints[req.params["endpoint"]])["key"].as!string,
+		req.json
+		));
 	connZabbix.close();
 }
