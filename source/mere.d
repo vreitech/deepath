@@ -36,26 +36,15 @@ class mereStash
     public HTTPServerSettings httpServerSettings;
     public HTTPClientSettings httpClientSettings;
     public URLRouter router;
-    public Node ymlConfig;
+    public Node[string] endpoints;
 
     public this() {}
-    public bool doInit()
+    public bool doInit() @safe
     {
         debug { mixin(logFunctionBorders!()); }
         this.httpServerSettings = new HTTPServerSettings;
         this.httpClientSettings = new HTTPClientSettings;
         this.router = new URLRouter;
-        const string ymlConfigFile = `config.yml`;
-/*        if(!ymlConfigFile.exists || !ymlConfigFile.isFile)
-        {
-            logError(`File with name "` ~ ymlConfigFile ~ `" not found!`);
-        }*/
-        try {
-            this.ymlConfig = Loader.fromFile(ymlConfigFile).load();
-        } catch (Exception e) {
-            logException(e, "Opening YAML config file");
-            return false;
-        }
 
         return true;
     }

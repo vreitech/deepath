@@ -4,7 +4,7 @@
 	],
 	"copyright": "Copyright © 2022, Filipp Chertiev",
 	"dependencies": {
-		"dyaml": "~>0.8.4",
+		"dyaml": "~>0.8.5",
 		"pack-d": "~>1.0.1",
 		"vibe-d": "~>0.9"
 	},
