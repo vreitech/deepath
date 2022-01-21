@@ -52,15 +52,15 @@ void main() {
 			foreach (endpoint; ymlConfig["appSettings"]["endpoints"].mapping) {
 				logDebug("%s", endpoint.key);
 				logDebug("%s", endpoint.value["server"]);
-				// if (endpoint.containsKey("server")
-				// && endpoint.containsKey("port")
-				// && endpoint.containsKey("hostname")
-				// && endpoint.containsKey("key")) {
-				// 	stash.one.endpoints[endpoint.as!string] = endpoint;
-				// 	logDebug("proper endpoint '%s'", endpoint.as!string);
-				// } else {
-				// 	logDebug("broken endpoint '%s'", endpoint.as!string);
-				// }
+				if ("server" in endpoint.value
+				  && "port" in endpoint.value
+				  && "hostname" in endpoint.value
+				  && "key" in endpoint.value) {
+				  	stash.one.endpoints[endpoint.key.as!string] = endpoint.value;
+				 	logDebug("proper endpoint '%s'", endpoint.key.as!string);
+				} else {
+				 	logDebug("broken endpoint '%s'", endpoint.key.as!string);
+				}
 			}
 		} else {
 			logError("Missed 'appSettings.endpoints' section in config. Exitting...");
@@ -138,5 +138,6 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 		(stash.one.endpoints[req.params["endpoint"]])["key"].as!string,
 		req.json
 		));
+	logDebug("Responce: %s", connZabbix.readAllUTF8());
 	connZabbix.close();
 }

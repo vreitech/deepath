@@ -10,9 +10,13 @@ ubyte[] formZabbixReq(string hostname, string key, Json message)
 {
     debug { mixin(logFunctionBorders!()); }
 
-    auto q = message.toString;
-    Json body = Json(
-        ["request": Json("sender data"), "data": Json("message")]
-        );
+    // auto q = message.toString;
+    Json body = Json([
+        "request": Json("sender data"), "data": serializeToJson([
+            "host": hostname,
+            "key": key,
+            "value": message.toString
+            ])
+        ]);
     return cast(ubyte[])("ZBXD\x01") ~ pack!`<L`(body.toString.length) ~ cast(ubyte[])(body.toString);
 }
