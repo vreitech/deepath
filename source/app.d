@@ -122,17 +122,24 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 		return;
 	}
 
-	auto zabbixReq = formZabbixReq(
-		(stash.one.endpoints[req.params["endpoint"]])["hostname"].as!string,
-		(stash.one.endpoints[req.params["endpoint"]])["key"].as!string,
-		req.json
-		);
-	
-	if (zabbixReq.length == 0) {
+	ubyte[] zabbixReq;
+	try {
+		zabbixReq = formZabbixReq(
+			(stash.one.endpoints[req.params["endpoint"]])["hostname"].as!string,
+			(stash.one.endpoints[req.params["endpoint"]])["key"].as!string,
+			req.json
+			);
+	} catch (JSONException e) {
 		result["status"] = false;
-		result["message"] = "Can't parse body into JSON";
+		result["message"] = "Can't parse body into JSON: " ~ e.msg;
 		return;
 	}
+	
+	// if (zabbixReq.length == 0) {
+	// 	result["status"] = false;
+	// 	result["message"] = "Can't parse body into JSON";
+	// 	return;
+	// }
 
 	result["status"] = true;
 	result["message"] = "OK";
