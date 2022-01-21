@@ -1,10 +1,10 @@
 module deepath.formzabbixreq;
 
-import deepath.helpers;
 import binary.pack;
 import vibe.data.json;
 import vibe.core.log : logDebug, logInfo, logError, logException;
 import std.conv : to;
+import deepath.helpers;
 
 ubyte[] formZabbixReq(string hostname, string key, Json message)
 {

@@ -1,10 +1,8 @@
 module deepath.mere;
 
 import vibe.http.server : HTTPServerSettings;
-//import vibe.http.client : HTTPClientSettings;
 import vibe.http.router : URLRouter;
 import vibe.core.log : logDebug, logInfo, logError, logException;
-//import std.file : exists, isFile;
 import dyaml;
 import deepath.helpers;
 

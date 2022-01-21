@@ -1,8 +1,8 @@
 module deepath.helpers;
 
 import core.vararg;
-import dyaml;
 import vibe.core.log : logDebug, logInfo, logError, logException;
+import dyaml;
 
 template logFunctionBorders()
 {

@@ -8,6 +8,9 @@
 		"pack-d": "~>1.0.1",
 		"vibe-d": "~>0.9"
 	},
+	"subConfigurations": {
+		"vibe-d:tls": "notls"
+	},
 	"description": "Requests dispatcher to Zabbix trap",
 	"license": "proprietary",
 	"name": "deepath",
