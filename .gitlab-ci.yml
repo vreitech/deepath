@@ -23,7 +23,6 @@ test-job:
   script:
     - echo "Running tests..."
     - ls -l deepath
-    - file deepath
     - echo "Tests complete."
 
 deploy-job:
