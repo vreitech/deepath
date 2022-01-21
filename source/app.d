@@ -49,7 +49,8 @@ void main() {
 	if ("appSettings" in ymlConfig)	{
 		if ("endpoints" in ymlConfig["appSettings"]) {
 			foreach (Node endpoint; ymlConfig["appSettings"]["endpoints"].mappingKeys) {
-				if ("server" in ymlConfig["appSettings"]["endpoints"][endpoint] && "port" in ymlConfig["appSettings"]["endpoints"][endpoint]) {
+				if ("server" in ymlConfig["appSettings"]["endpoints"][endpoint]
+				&& "port" in ymlConfig["appSettings"]["endpoints"][endpoint]) {
 					stash.one.endpoints ~= endpoint.as!string;
 					logDebug("proper endpoint '%s'", endpoint.as!string);
 				} else {
