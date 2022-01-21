@@ -1,12 +1,12 @@
 module deepath.mere;
 
-import deepath.helpers;
 import vibe.http.server : HTTPServerSettings;
-import vibe.http.client : HTTPClientSettings;
+//import vibe.http.client : HTTPClientSettings;
 import vibe.http.router : URLRouter;
 import vibe.core.log : logDebug, logInfo, logError, logException;
-import std.file : exists, isFile;
+//import std.file : exists, isFile;
 import dyaml;
+import deepath.helpers;
 
 template Singleton()
 {
@@ -34,7 +34,7 @@ class mereStash
 {
     mixin Singleton;
     public HTTPServerSettings httpServerSettings;
-    public HTTPClientSettings httpClientSettings;
+//    public HTTPClientSettings httpClientSettings;
     public URLRouter router;
     public Node[string] endpoints;
 
@@ -43,16 +43,9 @@ class mereStash
     {
         debug { mixin(logFunctionBorders!()); }
         this.httpServerSettings = new HTTPServerSettings;
-        this.httpClientSettings = new HTTPClientSettings;
+//        this.httpClientSettings = new HTTPClientSettings;
         this.router = new URLRouter;
 
         return true;
     }
-
-/*    void say(string text)
-    {
-        import std.stdio : writeln;
-    
-        writeln(text);
-    }*/
 }

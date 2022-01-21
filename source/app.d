@@ -1,15 +1,16 @@
-import vibe.vibe;
+//import vibe.vibe;
+//import vibe.http.client;
+import vibe.core.core : runApplication;
+import vibe.http.server;
+import vibe.http.fileserver;
+import vibe.core.log : logDebug, logInfo, logError, logException, setLogLevel, LogLevel;
+import vibe.data.json;
+import core.time;
 import std.algorithm.searching : canFind;
-import std.range;
-//import core.time;
-//import std.datetime.date;
-//import std.datetime.systime;
-//import std.typecons;
-//import std.conv;
+import dyaml;
 import deepath.helpers;
 import deepath.mere;
 import deepath.formzabbixreq;
-import dyaml;
 
 void main() {
 	debug { setLogLevel(LogLevel.debug_); }
@@ -38,7 +39,7 @@ void main() {
 	stash.one.httpServerSettings.keepAliveTimeout = getFromYaml(
 		ymlConfig, 10, "httpServerSettings", "keepAliveTimeout"
 		).seconds;
-	stash.one.httpClientSettings.defaultKeepAliveTimeout = getFromYaml(
+/*	stash.one.httpClientSettings.defaultKeepAliveTimeout = getFromYaml(
 		ymlConfig, 0, "httpClientSettings", "defaultKeepAliveTimeout"
 		).seconds;
 	stash.one.httpClientSettings.connectTimeout = getFromYaml(
@@ -46,7 +47,7 @@ void main() {
 		).seconds;
 	stash.one.httpClientSettings.readTimeout = getFromYaml(
 		ymlConfig, 5, "httpClientSettings", "readTimeout"
-		).seconds;
+		).seconds;*/
 	if ("appSettings" in ymlConfig)	{
 		if ("endpoints" in ymlConfig["appSettings"]) {
 			foreach (endpoint; ymlConfig["appSettings"]["endpoints"].mapping) {
@@ -74,9 +75,9 @@ void main() {
 	debug { logDebug(
 		"stash.one.httpServerSettings.keepAliveTimeout == %s", stash.one.httpServerSettings.keepAliveTimeout
 		); }
-	debug { logDebug(
+/*	debug { logDebug(
 		"stash.one.httpClientSettings.defaultKeepAliveTimeout == %s", stash.one.httpClientSettings.defaultKeepAliveTimeout
-		); }
+		); }*/
 
 	logInfo("Declaring routes...");
 	stash.one.router.get(`/`, &mainPage);
@@ -138,6 +139,6 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 		(stash.one.endpoints[req.params["endpoint"]])["key"].as!string,
 		req.json
 		));
-	logDebug("Responce: %s", connZabbix.readAllUTF8());
+//	logDebug("Responce: %s", connZabbix.readAllUTF8());
 	connZabbix.close();
 }
