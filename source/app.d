@@ -5,7 +5,7 @@ import vibe.http.server;
 import vibe.http.fileserver;
 import vibe.core.log : logDebug, logInfo, logError, logException, setLogLevel, LogLevel;
 import vibe.data.json;
-import core.time;
+import core.time : seconds;
 import std.algorithm.searching : canFind;
 import dyaml;
 import deepath.helpers;
