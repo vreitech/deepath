@@ -16,7 +16,7 @@
 			"buildOptions": ["debugMode", "debugInfo", "optimize"]
 		},
 		"release": {
-			"dflags": ["-mattr=+sse4.2"],
+			"dflags": ["-mattr=+sse4.2", "-static"],
 			"versions": ["VibeOutputCompactHTML"],
 			"buildOptions": ["releaseMode", "optimize"]
 		}

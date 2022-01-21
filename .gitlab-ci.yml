@@ -14,7 +14,8 @@ build-job:
       - deepath
   script:
     - echo "Compiling the code..."
-    - dub build -bdebug --parallel
+#    - dub build -bdebug --parallel
+    - dub build -brelease --parallel
     - echo "Compile complete."
 
 test-job:
@@ -22,6 +23,7 @@ test-job:
   tags: !reference [.default_tags, tags]
   script:
     - echo "Running tests..."
+    - strip -s deepath
     - ls -l deepath
     - echo "Tests complete."
 
