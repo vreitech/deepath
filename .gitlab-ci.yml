@@ -3,6 +3,14 @@ stages:
   - test
   - deploy
 
+variables:
+  build_type:
+    value: release
+    description: "^ choose build type ('debug' or 'release') ^"
+  build_mechanism:
+    value: default
+    description: "^ choose build mechanism ('default' or 'container_ldc')"
+
 .default_tags:
   tags: [deepath, supervisor, stage_1, env_alpha]
 
@@ -13,9 +21,15 @@ build-job:
     paths:
       - deepath
   script:
+    - declare -A a_build_type=([debug]=1 [release]=1)
+    - '[[ ! -n ${a_build_type["${build_type}"]} ]] && echo "Wrong build type." && exit 1'
+    - declare -A a_build_mechanism=([default]=1 [container_ldc]=1)
+    - '[[ ! -n ${a_build_mechanism["${build_mechanism}"]} ]] && echo "Wrong build type." && exit 1'
     - echo "Compiling the code..."
-#    - dub build -bdebug --parallel
-    - dub build -brelease --parallel
+    - 'case "${build_mechanism}" in'
+    - '"default") dub build -b "${build_type}" --parallel ;;'
+    - '"container_ldc") podman run --rm -it -v .:/src docker.io/vreitech/ldc:latest dub build -b "${build_type}" --parallel ;;'
+    - esac
     - strip -s deepath
     - echo "Compile complete."
 
