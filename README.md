@@ -2,7 +2,9 @@
 
 # deepath
 
-Requests dispatcher to Zabbix trapper via Zabbix proxy / Zabbix server
+## Annotattion
+
+Requests dispatcher from HTTP JSON requests to Zabbix proxy / Zabbix server trapper TCP socket.
 
 ## Build
 
