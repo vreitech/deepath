@@ -1,0 +1,17 @@
+httpServerSettings:
+  bindAddresses:        # list of IP addresses for binding in the application
+    - 127.0.0.1
+  port: 58088           # TCP port for listening in the application
+  keepAliveTimeout: 60
+appSettings:
+  endpoints:            # list of endpoint nodes, used in URL
+    somename:           # enpoint name for add to /trigger/ URL prefix (like http://deepath/trigger/somename)
+      server: 192.168.220.100   # IP of Zabbix server / proxy
+      port: 10051       # TCP zabbix trap port of Zabbix server / proxy
+      hostname: deployer        # Zabbix hostname to associate with (should be one of Zabbix monitoring hosts)
+      key: trap.deploy.somename # Dataset key to associate with (should be one of keys created for the host above)
+    someothername:
+      server: 10.120.0.200
+      port: 10051
+      hostname: gateway
+      key: trap.ping.gw
