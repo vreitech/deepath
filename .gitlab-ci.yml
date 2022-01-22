@@ -9,7 +9,7 @@ variables:
     description: "^ choose build type ('debug' or 'release') ^"
   build_mechanism:
     value: default
-    description: "^ choose build mechanism ('default' or 'container_ldc')"
+    description: "^ choose build mechanism ('default' or 'container_ldc') ^"
 
 .default_tags:
   tags: [deepath, supervisor, stage_1, env_alpha]
