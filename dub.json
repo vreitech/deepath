@@ -6,7 +6,8 @@
 	"dependencies": {
 		"dyaml": "~>0.8.5",
 		"pack-d": "~>1.0.1",
-		"vibe-d": "~>0.9"
+		"vibe-d": "~>0.9",
+		"vibe-d:tls": "*"
 	},
 	"subConfigurations": {
 		"vibe-d:tls": "notls"

@@ -32,7 +32,6 @@ class mereStash
 {
     mixin Singleton;
     public HTTPServerSettings httpServerSettings;
-//    public HTTPClientSettings httpClientSettings;
     public URLRouter router;
     public Node[string] endpoints;
 
