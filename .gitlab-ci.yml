@@ -26,10 +26,8 @@ build-job:
     - declare -A a_build_mechanism=([default]=1 [container_ldc]=1)
     - '[[ ! -n ${a_build_mechanism["${build_mechanism}"]} ]] && echo "Wrong build type." && exit 1'
     - echo "Compiling the code..."
-    - 'case "${build_mechanism}" in'
-    - '"default") dub build -b "${build_type}" --parallel ;;'
-    - '"container_ldc") podman run --rm -it -v .:/src docker.io/vreitech/ldc:latest dub build -b "${build_type}" --parallel ;;'
-    - esac
+    - '[[ "${build_mechanism}" == default ]] && dub build -b "${build_type}" --parallel'
+    - '[[ "${build_mechanism}" == container_ldc ]] && podman run --rm -it -v .:/src docker.io/vreitech/ldc:latest dub build -b "${build_type}" --parallel'
     - strip -s deepath
     - echo "Compile complete."
 
