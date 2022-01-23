@@ -17,11 +17,6 @@ variables:
 badge:
   stage: build
   tags: !reference [.default_tags, tags]
-  before_script:
-    - echo "Python dependencies installation"
-    - sudo apt update
-    - sudo apt install -y python3-pip
-    - pip install anybadge
   script: |
     anybadge -l "ldc version" -v "$(ldc2 --version | head -n1 | grep -oP '(?<=\().*(?=\))')" -f ldc-version.svg -c green
   artifacts:
