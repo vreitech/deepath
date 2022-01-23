@@ -1,5 +1,5 @@
-[![pipeline status](https://gitlab.com/f.chertiev/deepath/badges/main/pipeline.svg)](https://gitlab.com/f.chertiev/deepath/-/commits/main)
 [![ldc version](https://gitlab.com/f.chertiev/deepath/-/jobs/artifacts/main/raw/ldc-version.svg?job=badge)](https://github.com/ldc-developers/ldc)
+[![pipeline status](https://gitlab.com/f.chertiev/deepath/badges/main/pipeline.svg)](https://gitlab.com/f.chertiev/deepath/-/commits/main)
 
 # deepath
 
