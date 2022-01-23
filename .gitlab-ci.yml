@@ -1,7 +1,7 @@
 stages:
   - build
   - test
-  - deploy
+  # - deploy
 
 variables:
   build_type:
@@ -14,7 +14,23 @@ variables:
 .default_tags:
   tags: [deepath, supervisor, stage_1, env_alpha]
 
-build-job:
+badge:
+  stage: build
+  tags: !reference [.default_tags, tags]
+  before_script:
+    - echo "Python dependencies installation"
+    - sudo apt update
+    - sudo apt install -y python3-pip
+    - pip install anybadge
+  script: |
+    anybadge -l "ldc version" -v "$(ldc2 --version | head -n1 | grep -oP '(?<=\().*(?=\))')" -f ldc-version.svg -c green
+  artifacts:
+    paths:
+      - ldc-version.svg
+    when: always
+    expire_in: 5y weeks
+
+build-app:
   stage: build
   tags: !reference [.default_tags, tags]
   artifacts:
@@ -31,7 +47,7 @@ build-job:
     - strip -s deepath
     - echo "Compile complete."
 
-test-job:
+test-app:
   stage: test
   tags: !reference [.default_tags, tags]
   script:
@@ -39,8 +55,8 @@ test-job:
     - ls -l deepath
     - echo "Tests complete."
 
-deploy-job:
-  stage: deploy
-  tags: !reference [.default_tags, tags]
-  script:
-    - echo "Application successfully deployed."
+# deploy:
+#   stage: deploy
+#   tags: !reference [.default_tags, tags]
+#   script:
+#     - echo "Application successfully deployed."
