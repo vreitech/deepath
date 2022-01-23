@@ -2,9 +2,9 @@
 
 # deepath
 
-## Annotattion
+## Annotation
 
-Requests dispatcher from HTTP JSON requests to Zabbix proxy / Zabbix server trapper TCP socket.
+Dispatcher of HTTP JSON requests to Zabbix proxy / Zabbix server trapper TCP socket.
 
 ## Build
 
