@@ -1,8 +1,6 @@
-//import vibe.vibe;
-//import vibe.http.client;
 import vibe.core.core : runApplication;
 import vibe.http.server;
-import vibe.http.fileserver;
+//import vibe.http.fileserver;
 import vibe.core.log : logDebug, logInfo, logError, logException, setLogLevel, LogLevel;
 import vibe.data.json;
 import core.time : seconds;
@@ -34,7 +32,6 @@ void main() {
 		logError(`Stash initialization failed! Exitting...`);
 		return;
 	}
-//	stash.one.httpServerSettings.bindAddresses = ["::1", "127.0.0.1"];
 	stash.one.httpServerSettings.bindAddresses = [];
 	if(!ymlConfig["httpServerSettings"].containsKey("bindAddresses")
 	|| ymlConfig["httpServerSettings"]["bindAddresses"].length == 0) {
@@ -78,8 +75,8 @@ void main() {
 	logInfo("Declaring routes...");
 	stash.one.router.get(`/`, &mainPage);
 	stash.one.router.get(`/trigger/:endpoint`, &getJsonReq);
-	stash.one.router.get(`/css/*`, serveStaticFiles(`./public/css/`));
-	stash.one.router.get(`*`, serveStaticFiles(`./public/`));
+	//stash.one.router.get(`/css/*`, serveStaticFiles(`./public/css/`));
+	//stash.one.router.get(`*`, serveStaticFiles(`./public/`));
 	logInfo("Routes declared.");
 	debug { logDebug(`All routes: %s`, stash.one.router.getAllRoutes()); }
 
@@ -96,7 +93,9 @@ void main() {
 void mainPage(HTTPServerRequest req, HTTPServerResponse res) @safe {
 	debug { mixin(logFunctionBorders!()); }
 
-	res.writeBody("Hello, World!");
+	auto result = Json.emptyObject;
+	result["description"] = "Dispatch HTTP JSON requests to Zabbix trapper";
+	res.writeJsonBody(result);
 }
 
 void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
@@ -104,12 +103,11 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 
 	debug { logDebug("Method: %s", req.method); }
 
-	Json result = Json.emptyObject;
+	auto result = Json.emptyObject;
 	scope (exit) { res.writeJsonBody(result); }
 
 	auto stash = new mereStash;
 
-//	if (!canFind(stash.one.endpoints, req.params["endpoint"])) {
 	if (!(req.params["endpoint"] in stash.one.endpoints)) {
 		result["status"] = false;
 		result["message"] = "Wrong endpoint";
@@ -135,12 +133,6 @@ void getJsonReq(HTTPServerRequest req, HTTPServerResponse res) {
 		return;
 	}
 	
-	// if (zabbixReq.length == 0) {
-	// 	result["status"] = false;
-	// 	result["message"] = "Can't parse body into JSON";
-	// 	return;
-	// }
-
 	result["status"] = true;
 	result["message"] = "OK";
 
