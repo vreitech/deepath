@@ -37,7 +37,7 @@ void main() {
 	|| ymlConfig["httpServerSettings"]["bindAddresses"].length == 0) {
 		stash.one.httpServerSettings.bindAddresses ~= `127.0.0.1`;
 	} else {
-        	foreach(address; ymlConfig["httpServerSettings"]["bindAddresses"].sequence) {
+        foreach(address; ymlConfig["httpServerSettings"]["bindAddresses"].sequence) {
 			stash.one.httpServerSettings.bindAddresses ~= address.as!string;
 			debug { logDebug("%s", address); }
 		}
@@ -49,10 +49,8 @@ void main() {
 	if ("appSettings" in ymlConfig)	{
 		if ("endpoints" in ymlConfig["appSettings"]) {
 			foreach (endpoint; ymlConfig["appSettings"]["endpoints"].mapping) {
-				if ("server" in endpoint.value
-				  && "port" in endpoint.value
-				  && "hostname" in endpoint.value
-				  && "key" in endpoint.value) {
+				if ("server" in endpoint.value && "port" in endpoint.value
+				&& "hostname" in endpoint.value && "key" in endpoint.value) {
 				  	stash.one.endpoints[endpoint.key.as!string] = endpoint.value;
 				 	debug { logDebug("proper endpoint '%s'", endpoint.key.as!string); }
 				} else {
