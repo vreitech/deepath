@@ -39,11 +39,14 @@ podman --rm -it -v .:/src docker.io/vreitech/ldc dub build -b release
 
 If build was success, use **deepath** binary.
 
-Configure file example: **config.yml**.
+Configuration file example: **config.yml**.
 
 ## Making systemd service for application
 
 You may use example **deepath-endpoint.service** file from the project:
 ```
-mkdir -p ~/.config/systemd/user && cp deepath-endpoint.service ~/.config/systemd/user/ && systemctl --user enable ~/.config/systemd/user/deepath-endpoint.service && systemctl --user start deepath-endpoint.service
+mkdir -p ~/.config/systemd/user \
+&& cp deepath-endpoint.service ~/.config/systemd/user/ \
+&& systemctl --user enable ~/.config/systemd/user/deepath-endpoint.service \
+&& systemctl --user start deepath-endpoint.service
 ```
