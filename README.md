@@ -24,12 +24,12 @@ Podman (or Docker) need to be installed on your system.
 
 For making debug build you need to run in project directory:
 ```
-podman --rm -it -v .:/src docker.io/vreitech/ldc dub build -b debug
+podman --rm -it -v .:/src docker.io/vreitech/docker-ldc:v1.37.0 dub build -b debug
 ```
 
 For making static release build you need to run in project directory:
 ```
-podman --rm -it -v .:/src docker.io/vreitech/ldc dub build -b release
+podman --rm -it -v .:/src docker.io/vreitech/docker-ldc:v1.37.0 dub build -b release
 ```
 
 ## Getting application executable file
