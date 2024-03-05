@@ -71,7 +71,7 @@ void main() {
 
 	logInfo("Declaring routes...");
 	stash.one.router.get(`/`, &mainPage);
-	stash.one.router.get(`/trigger/:endpoint`, &getJsonReq);
+	stash.one.router.post(`/trigger/:endpoint`, &getJsonReq);
 	//stash.one.router.get(`/css/*`, serveStaticFiles(`./public/css/`));
 	//stash.one.router.get(`*`, serveStaticFiles(`./public/`));
 	logInfo("Routes declared.");
