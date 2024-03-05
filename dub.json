@@ -2,11 +2,11 @@
 	"authors": [
 		"Filipp Chertiev"
 	],
-	"copyright": "Copyright © 2022, Filipp Chertiev",
+	"copyright": "Copyright © 2022-2024, Filipp Chertiev",
 	"dependencies": {
-		"dyaml": "~>0.8.5",
-		"pack-d": "~>1.0.1",
-		"vibe-d:http": "~>0.9",
+		"dyaml": "~>0.9",
+		"pack-d": "~>1.0",
+		"vibe-d:http": "~>0.10",
 		"vibe-d:tls": "*"
 	},
 	"subConfigurations": {
